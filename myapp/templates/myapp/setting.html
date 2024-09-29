@@ -1,1 +1,20 @@
-S
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'myapp/css/setting.css' %}" />
+{% endblock %}
+
+{% block header-title %}設定{% endblock %}
+
+{% block content %}
+<div class="changes_box">
+    <a href="{% url 'username_change' %}" class="changes">ユーザー名変更</a>
+    <a href="{% url 'mail_change' %}" class="changes">メールアドレス変更</a>
+    <a href="{% url 'icon_change' %}" class="changes">アイコン変更</a>
+    <a href="{% url 'password_change' %}" class="changes">パスワード変更</a>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="changes">ログアウト</button>
+    </form>
+</div>
+{% endblock %}

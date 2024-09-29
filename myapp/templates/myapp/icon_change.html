@@ -1,0 +1,20 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'myapp/css/icon_change.css' %}" />
+{% endblock %}
+
+{% block header-title %}アイコン変更{% endblock %}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    {% if user.picture %}
+        <img src="{{ user.picture.url }}" alt="" width="15%">
+    {% else %}
+        <div>写真がありません</div>
+    {% endif %}
+    {{ form.picture }}
+    <button type="submit">変更</button>
+</form>
+{% endblock %}

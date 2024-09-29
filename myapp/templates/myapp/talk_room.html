@@ -1,1 +1,30 @@
-TR
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'myapp/css/talk_room.css' %}" />
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+{% block header-title %}{{talk_aite}}<a href="{% url 'talk_room' talk_aite.id %}" class="kousin">更新</a>{% endblock %}
+
+{% block content %}
+    {% for message in messages %}
+        <div class="mes">
+            <div class="talk_aite_box">
+                <div class="sendername">送り主：{{message.sendername}}</div> 
+                <div class="message">{{message.content}}</div> 
+                <div class="time">{{message.timestamp}}</div>
+            </div> 
+        </div>
+    {% endfor %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.content }}
+        <button type="submit">送信</button>
+    </form>
+{% endblock %}
+
+
+

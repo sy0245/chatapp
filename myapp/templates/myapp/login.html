@@ -1,1 +1,28 @@
-LI
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <link rel="stylesheet" href="../../static/myapp/css/login.css">
+  <title>login</title>
+</head>
+<body>
+    <div>ログイン</div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        {{ field }}
+        {{ field.errors }}
+        <hr>
+        {% endfor %}
+        <button type="submit">ログイン</button>
+    </form>
+    {% if form.non_field_errors %}
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,11 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block extra_style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'myapp/css/mail_change_done.css' %}" />
+{% endblock %}
+
+{% block header-title %}メールアドレス変更{% endblock %}
+
+{% block content %}
+<div class="username_change_done">メールアドレス変更完了</div>
+{% endblock %}

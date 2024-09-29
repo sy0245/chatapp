@@ -1,0 +1,19 @@
+@media screen {
+    
+}
+.button1{
+    position: relative;
+    margin: 600% 0 0 0;
+    display: inline-block;
+    position: relative;
+}
+.button2{
+    position: relative;
+    margin: auto;
+}
+
+.btn_index{
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}

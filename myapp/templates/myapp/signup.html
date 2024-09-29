@@ -1,1 +1,19 @@
-SU
+
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <link rel="stylesheet" href="../../static/myapp/css/signup.css">
+  <title>signup</title>
+</head>
+<body>
+  <div>会員登録</div>
+<form method='post' enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <label>img</label><input type="file"></label>
+  <br>
+  <button type='submit'>submission</button>
+</form>
+</body>
+</html>

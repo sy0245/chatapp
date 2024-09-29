@@ -1,0 +1,14 @@
+.changes_box{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.changes{
+    text-decoration: none;
+    background: white;
+    color:black;
+    margin: 3% auto;
+    border: solid black 3px;
+    padding: 5px;
+    border-radius: 50% 50%;
+}
