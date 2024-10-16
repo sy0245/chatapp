@@ -9,12 +9,11 @@
 <body>
     <div class="btn_index">
         <div class="btn">
-            <button onclick="location.href='login'" class="button1">ログイン</button>
+            <a href="{% url 'account_login' %}" class="button1">ログイン</a>
         </div>
         <div class="btn">
-            <button onclick="location.href='signup'" class="button2">会員登録</button>
+            <a href="{% url 'account_signup' %}" class="button2">会員登録</a>
         </div>
-        こんにちは
     </div>
 </body>
 </html>

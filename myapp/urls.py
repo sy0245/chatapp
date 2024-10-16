@@ -1,10 +1,10 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('signup', views.signup_view, name='signup_view'),
-    path('login', views.login_view, name='login_view'),
+    # path('signup', views.signup_view, name='signup_view'),
+    # path('login', views.login_view, name='login_view'),
     path('friends', views.friends, name='friends'),
     path("talk_room/<int:user_id>/", views.talk_room, name="talk_room"),
     path('setting', views.setting, name='setting'),
@@ -17,4 +17,5 @@ urlpatterns = [
     path('password_change', views.Password_Change.as_view(), name='password_change'),
     path('password_change_done', views.Password_Chang_Done.as_view(), name='password_change_done'),
     path('logout', views.Logout.as_view(), name='logout'),
+    path('accounts/',include('allauth.urls')),
 ]

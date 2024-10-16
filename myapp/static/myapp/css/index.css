@@ -6,10 +6,16 @@
     margin: 600% 0 0 0;
     display: inline-block;
     position: relative;
+    text-decoration: none;
+    border: 1px solid black;
+    color: black;
 }
 .button2{
     position: relative;
     margin: auto;
+    text-decoration: none;
+    border: 1px solid black;
+    color: black;
 }
 
 .btn_index{

@@ -1,3 +1,23 @@
+.friend_search{
+    text-align: center;
+    position: relative;
+    margin: auto;
+    background-color: gray;
+    border-bottom:#000 solid 1px;
+    padding: 3px 0;
+}
+.friend_search_form{
+    width: 30%;
+    height: 2rem;
+}
+.friend_search_form_button{
+    border: 2px gray solid;
+    color:black;
+    position: relative;
+    height: 2rem;
+    padding: 3px;
+    border-radius: 50%;
+}
 .friend{
     display: flex;
     flex-direction: column;

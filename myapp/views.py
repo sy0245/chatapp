@@ -7,7 +7,8 @@ from django.views.generic import CreateView
 from django.contrib.auth import login, authenticate
 from .forms import Signupform,Talkroom,UsernameChangeForm,MailChangeForm,IconChangeForm,PasswordChangeForm
 from .forms import Loginform
-from django.views.generic import TemplateView
+
+from django.views import generic 
 from django.contrib.auth.views import LoginView,PasswordChangeView,PasswordChangeDoneView,LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser, Message
@@ -19,59 +20,71 @@ import operator
 def index(request):
     return render(request, "myapp/index.html")
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = Signupform(request.POST,request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('index')
-        else:
-            return render(request, "myapp/signup.html", {'form': form})
-    else:
-        form = Signupform()
-        return render(request, "myapp/signup.html", {'form': form})
+# def signup_view(request):
+#     if request.method == 'POST':
+#         form = Signupform(request.POST,request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('index')
+#         else:
+#             return render(request, "myapp/signup.html", {'form': form})
+#     else:
+#         form = Signupform()
+#         return render(request, "myapp/signup.html", {'form': form})
 
-def login_view(request):
-    if request.method == 'POST':
-        form = Loginform(request, request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect('friends')
-                else:
-                    form.add_error(None, 'アカウントが無効です。')
-                    return render(request, 'myapp/login.html', {'form': form})
-            else:
-                form.add_error(None, 'ユーザー名またはパスワードが間違っています。')
-                return render(request, 'myapp/login.html', {'form': form})
-        else:
-            return render(request, 'myapp/login.html', {'form': form})
-    if request.method == 'GET':
-        form = Loginform(request)
-        return render(request, 'myapp/login.html', {'form': form})
+# class SignupView(generic.FormView):
+#     template_name="signup.html"
+#     form_class=Signupform
+#     success_url=reverse_lazy("index")
+
+#     def form_valid(self,form):
+#         form.send_email()
+#         return super().form_valid(form)
+
+# def login_view(request):
+#     if request.method == 'POST':
+#         form = Loginform(request, request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#             user = authenticate(request, username=username, password=password)
+#             if user is not None:
+#                 if user.is_active:
+#                     login(request, user)
+#                     return redirect('friends')
+#                 else:
+#                     form.add_error(None, 'アカウントが無効です。')
+#                     return render(request, 'myapp/login.html', {'form': form})
+#             else:
+#                 form.add_error(None, 'ユーザー名またはパスワードが間違っています。')
+#                 return render(request, 'myapp/login.html', {'form': form})
+#         else:
+#             return render(request, 'myapp/login.html', {'form': form})
+#     if request.method == 'GET':
+#         form = Loginform(request)
+#         return render(request, 'myapp/login.html', {'form': form})
     
 @login_required
 def friends(request):
-    user = request.user
-    friends = CustomUser.objects.exclude(id=user.id)
-    # トーク情報とフレンド情報を含む info を作成
     info = []
     info_have_message = []
     info_have_no_message = []
+    user = request.user
+    query = request.GET.get('query')
+    if query:
+            friends = CustomUser.objects.filter(username__icontains=query).exclude(id=user.id)
+    else:
+        friends = CustomUser.objects.exclude(id=user.id)
+        # トーク情報とフレンド情報を含む info を作成
     for friend in friends:
         # 最新のメッセージの取得
         latest_message = Message.objects.filter(Q(sendername=user,recipientname=friend) | Q(recipientname=user, sendername=friend)
         ).order_by('timestamp').last()
-
         if latest_message:
             info_have_message.append([friend, latest_message.content, CustomUser.objects.get(username=friend).picture,latest_message.timestamp])
         else:
             info_have_no_message.append([friend, "",CustomUser.objects.get(username=friend).picture ,""])
-    # 時間順に並び替え
+        # 時間順に並び替え
     info_have_message = sorted(info_have_message, key=operator.itemgetter(2), reverse=True)
     info.extend(info_have_message)
     info.extend(info_have_no_message)
@@ -102,7 +115,7 @@ def talk_room(request,user_id):
     
     else:
         return render(request,'myapp/talk_room.html',context_talkroom)
-    
+@login_required    
 def setting(request):
     return render(request, "myapp/setting.html")
 
