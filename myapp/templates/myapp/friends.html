@@ -17,21 +17,21 @@
            placeholder=" ユーザー名で検索 " class="friend_search_form">
     <button class="friend_search_form_button">検索</button>
   </form>
-{% for friend, message,img,time in info %}
+
+    {% for friend in friends %}
     <div class="friend">
         <div class="friend_box"></div>
             <a href="{% url 'talk_room' friend.id %}" name="{{friend}}" class="talk_room_link" >
-                <!-- <img class="img" src="{{user_data.2}}" style="width:auto;height:auto">  -->
                 {% if img %}
-                <img src="{{img.url}}" class="img">
+                <img src="{{friend.picture.url}}" class="img">
                 {% else %}
                 <img src="myapp/img/defalt_img.png" class="img">
                 {% endif %}
-                <div class="username">{{friend}}</div>
-                <div class="time">{{time}}</div>
-                <div class="message">{{message}}</div>    
+                <div class="username">{{friend.username}}</div>
+                <div class="time">{{friend.time}}</div>
+                <div class="message">{{friend.latest_msg_talk}}</div>   
             </a>
         </div>
     </div>
-{% endfor %}
+    {% endfor %}
 {% endblock %}

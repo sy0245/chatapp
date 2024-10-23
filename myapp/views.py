@@ -13,7 +13,9 @@ from django.contrib.auth.views import LoginView,PasswordChangeView,PasswordChang
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser, Message
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q,Case, When, Value, IntegerField
+from django.db.models import Q, Case, When, Value, IntegerField,Max, F
+from django.db.models.functions import Coalesce, Greatest
+from django.db.models import OuterRef, Subquery
 import operator
 
 
@@ -66,29 +68,23 @@ def index(request):
     
 @login_required
 def friends(request):
-    info = []
-    info_have_message = []
-    info_have_no_message = []
     user = request.user
     query = request.GET.get('query')
+    latest_msg = Message.objects.filter(
+        Q(sendername=OuterRef("pk"), recipientname=user)
+        | Q(sendername=user, recipientname=OuterRef("pk"))
+    ).order_by("-timestamp")
+
+    friends =(CustomUser.objects.exclude(id=user.id).annotate(
+            latest_msg_talk=Subquery(latest_msg.values("content")[:1]),
+            send_max=Max("messages_sender__timestamp", filter=Q(messages_sender__recipientname=user)),
+            receive_max=Max("messages_recipient__timestamp", filter=Q(messages_recipient__sendername=user)),
+            latest_time=Greatest("send_max", "receive_max"),
+            time=Coalesce("latest_time", "send_max", "receive_max"),
+    )).order_by(F("time").desc(nulls_last=True))
     if query:
-            friends = CustomUser.objects.filter(username__icontains=query).exclude(id=user.id)
-    else:
-        friends = CustomUser.objects.exclude(id=user.id)
-        # トーク情報とフレンド情報を含む info を作成
-    for friend in friends:
-        # 最新のメッセージの取得
-        latest_message = Message.objects.filter(Q(sendername=user,recipientname=friend) | Q(recipientname=user, sendername=friend)
-        ).order_by('timestamp').last()
-        if latest_message:
-            info_have_message.append([friend, latest_message.content, CustomUser.objects.get(username=friend).picture,latest_message.timestamp])
-        else:
-            info_have_no_message.append([friend, "",CustomUser.objects.get(username=friend).picture ,""])
-        # 時間順に並び替え
-    info_have_message = sorted(info_have_message, key=operator.itemgetter(2), reverse=True)
-    info.extend(info_have_message)
-    info.extend(info_have_no_message)
-    context = {"info": info}
+        friends = friends.filter(Q(username__icontains=query) | Q(email__icontains=query))
+    context = {"friends": friends}
     return render(request, "myapp/friends.html", context)
 
 @login_required
